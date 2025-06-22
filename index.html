@@ -181,6 +181,8 @@
             text-align: center;
             transition: transform 0.3s;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
         }
         
         .skin-card:hover {
@@ -243,6 +245,117 @@
             border: 1px solid #5D2906;
         }
         
+        /* 玩家介绍弹窗样式 */
+        .player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .player-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a2a3a, #0d1b2b);
+            border: 3px solid #4CAF50;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .player-modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 15px;
+        }
+        
+        .modal-skin {
+            width: 80px;
+            height: 120px;
+            margin-right: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .modal-name {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: #FFD700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+        }
+        
+        .modal-info {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+        
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(30, 40, 60, 0.7);
+            border: 2px solid #4A5568;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: #FF9800;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .stat-value {
+            color: #76B852;
+            font-size: 1.2rem;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: #FF9800;
+        }
+        
         @media (max-width: 768px) {
             .server-name {
                 font-size: 2.5rem;
@@ -255,6 +368,25 @@
             .join-button {
                 font-size: 1.2rem;
                 padding: 12px 24px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .modal-skin {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .modal-stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -293,32 +425,41 @@
             
             <h2 class="section-title">玩家风采</h2>
             <div class="player-skins">
-                <div class="skin-card">
+                <div class="skin-card" data-name="糖柒" data-image="https://img.picui.cn/free/2025/06/22/685801193928f.png" 
+                    data-info="糖柒是流月镇的建筑大师，擅长建造现代风格的建筑和像素艺术。她总是乐于帮助新人，是服务器的元老级玩家。加入时间：2024年3月"
+                    data-stats="建筑等级: 大师 | 生存天数: 120天">
                     <div class="skin-image" style="background-image: url('https://img.picui.cn/free/2025/06/22/685801193928f.png')"></div>
                     <div>糖柒</div>
                 </div>
                 
-                <div class="skin-card">
+                <div class="skin-card" data-name="北门" data-image="https://img.picui.cn/free/2025/06/22/68580132ad6a5.png" 
+                    data-info="北门是服务器的红石专家，精通各种自动化装置和机关设计。他负责维护服务器的公共设施，为小镇提供技术支持。加入时间：2024年5月"
+                    data-stats="红石等级: 专家 | 生存天数: 85天">
                     <div class="skin-image" style="background-image: url('https://img.picui.cn/free/2025/06/22/68580132ad6a5.png')"></div>
                     <div>北门</div>
                 </div>
                 
-                <div class="skin-card">
+                <div class="skin-card" data-name="羊毛" data-image="https://img.picui.cn/free/2025/06/22/6858013325465.png" 
+                    data-info="羊毛是服务器中的农业专家，负责管理公共农场和动物养殖场。他拥有最全的作物收藏，总是乐于分享食物。加入时间：2024年4月"
+                    data-stats="农业等级: 专家 | 生存天数: 95天">
                     <div class="skin-image" style="background-image: url('https://img.picui.cn/free/2025/06/22/6858013325465.png')"></div>
                     <div>羊毛</div>
                 </div>
                 
-                <div class="skin-card">
+                <div class="skin-card" data-name="霜渊" data-image="https://img.picui.cn/free/2025/06/22/6858013321d18.png" 
+                    data-info="霜渊是服务器的探险家，喜欢探索各种地形和遗迹。他发现了服务器中80%的沉船和丛林神庙，拥有丰富的宝藏收藏。加入时间：2024年6月"
+                    data-stats="探险等级: 大师 | 生存天数: 65天">
                     <div class="skin-image" style="background-image: url('https://img.picui.cn/free/2025/06/22/6858013321d18.png')"></div>
                     <div>霜渊</div>
                 </div>
                 
-                <div class="skin-card">
+                <div class="skin-card" data-name="星水" data-image="https://img.picui.cn/free/2025/06/22/68580133637e0.png" 
+                    data-info="星水是服务器的矿工之王，拥有最深的矿井和最稀有的矿物收藏。他每周组织公共挖矿活动，帮助新人获取资源。加入时间：2024年2月"
+                    data-stats="采矿等级: 大师 | 生存天数: 150天">
                     <div class="skin-image" style="background-image: url('https://img.picui.cn/free/2025/06/22/68580133637e0.png')"></div>
                     <div>星水</div>
                 </div>
             </div>
-            
             <h2 class="section-title">游戏实景</h2>
             <div class="screenshot-container">
                 <img src="https://img.picui.cn/free/2025/06/22/685810aeaf614.jpg" alt="流月镇游戏截图" class="screenshot">
@@ -326,7 +467,6 @@
                 <img src="https://img.picui.cn/free/2025/06/22/685810aec0b62.jpg" alt="流月镇游戏截图" class="screenshot">
                 <img src="https://img.picui.cn/free/2025/06/22/685810aeaeddf.jpg" alt="流月镇游戏截图" class="screenshot">
                 <img src="https://img.picui.cn/free/2025/06/22/685810ae6909d.jpg" alt="流月镇游戏截图" class="screenshot">
-
             </div>
         </main>
         
@@ -339,5 +479,87 @@
             <p style="margin-top: 15px;">© 2025 Clanota Community</p>
         </footer>
     </div>
+    
+    <!-- 玩家介绍弹窗 -->
+    <div class="player-modal" id="playerModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <div class="modal-skin" id="modalSkin"></div>
+                <h2 class="modal-name" id="modalName"></h2>
+            </div>
+            <div class="modal-info" id="modalInfo"></div>
+            <div class="modal-stats" id="modalStats"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 玩家介绍弹窗功能
+        const playerModal = document.getElementById('playerModal');
+        const modalSkin = document.getElementById('modalSkin');
+        const modalName = document.getElementById('modalName');
+        const modalInfo = document.getElementById('modalInfo');
+        const modalStats = document.getElementById('modalStats');
+        const closeModal = document.getElementById('closeModal');
+        
+        // 获取所有玩家卡片
+        const playerCards = document.querySelectorAll('.skin-card');
+        
+        // 为每个玩家卡片添加点击事件
+        playerCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // 获取玩家信息
+                const name = card.getAttribute('data-name');
+                const image = card.getAttribute('data-image');
+                const info = card.getAttribute('data-info');
+                const stats = card.getAttribute('data-stats');
+                
+                // 填充弹窗内容
+                modalSkin.style.backgroundImage = `url('${image}')`;
+                modalName.textContent = name;
+                modalInfo.textContent = info;
+                
+                // 解析并显示统计信息
+                modalStats.innerHTML = '';
+                stats.split('|').forEach(stat => {
+                    const [label, value] = stat.split(':');
+                    const statBox = document.createElement('div');
+                    statBox.className = 'stat-box';
+                    statBox.innerHTML = `
+                        <div class="stat-label">${label.trim()}</div>
+                        <div class="stat-value">${value.trim()}</div>
+                    `;
+                    modalStats.appendChild(statBox);
+                });
+                
+                // 显示弹窗
+                playerModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            });
+        });
+        
+        // 关闭弹窗功能
+        function closePlayerModal() {
+            playerModal.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复背景滚动
+        }
+        
+        // 点击关闭按钮
+        closeModal.addEventListener('click', closePlayerModal);
+        
+        // 点击弹窗背景关闭
+        playerModal.addEventListener('click', (e) => {
+            if (e.target === playerModal) {
+                closePlayerModal();
+            }
+        });
+        
+        // 按ESC键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && playerModal.classList.contains('active')) {
+                closePlayerModal();
+            }
+        });
+    </script>
 </body>
 </html>
